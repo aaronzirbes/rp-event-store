@@ -30,9 +30,9 @@ class EventSourceModule extends AbstractModule {
     private Cluster cluster
 
     EventSourceModule(Map<String, Object> config) {
-        this.cassandraHost = config.cassandraHost ?: DEFAULT_HOST
-        this.cassandraPort = config.cassandraPort ?: DEFAULT_PORT
-        this.keyspace = config.cassandraKeyspace ?: DEFAULT_KEYSPACE
+        this.cassandraHost = config.host ?: DEFAULT_HOST
+        this.cassandraPort = config.port ?: DEFAULT_PORT
+        this.keyspace = config.keyspace ?: DEFAULT_KEYSPACE
     }
 
     @Override
