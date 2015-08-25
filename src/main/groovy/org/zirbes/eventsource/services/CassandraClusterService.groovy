@@ -31,15 +31,25 @@ class CassandraClusterService implements Service {
     static final String REPLICATION_FACTOR = 3
 
     static final Map<String, String> CREATE_TABLES = [
-        'events': '''CREATE TABLE bicycle.events (
-                         event_id text,
+        'event': '''CREATE TABLE bicycle.event (
+                         id text,
+                         revision int,
+                         type text,
+                         aggregate_id text,
                          time timestamp,
-                         event_type text,
                          user_id text,
                          source_system text,
                          data blob,
-                         PRIMARY KEY((event_id), time, event_type)
-                     ) WITH CLUSTERING ORDER BY (time DESC);'''
+                         PRIMARY KEY((id), aggregate_id, time)
+                     ) WITH CLUSTERING ORDER BY (aggregate_id ASC, time DESC);''',
+        'snapshot': '''CREATE TABLE bicycle.snapshot (
+                         id text,
+                         aggregate_id text,
+                         revision int,
+                         time timestamp,
+                         data blob,
+                         PRIMARY KEY((id), aggregate_id, time)
+                     ) WITH CLUSTERING ORDER BY (aggregate_id ASC, time DESC);'''
     ].asImmutable()
 
     @Inject
