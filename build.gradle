@@ -20,6 +20,9 @@ test {
     jvmArgs '-Duser.timezone=UTC'
 }
 
+run {
+    jvmArgs '-Dlogging.level.org.zirbes.eventsource=INFO'
+}
 
 dependencies {
 
