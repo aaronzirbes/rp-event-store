@@ -1,3 +1,7 @@
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.databind.SerializationFeature
+import com.fasterxml.jackson.datatype.joda.JodaModule
+
 import org.zirbes.eventsource.handlers.EventHandler
 import org.zirbes.eventsource.handlers.EventingErrorHandler
 import org.zirbes.eventsource.handlers.HealthHandler
@@ -23,7 +27,13 @@ ratpack {
         bindInstance(ConfigData, configData)
         bindInstance(ServerErrorHandler, new EventingErrorHandler())
         module (new EventSourceModule(configData.get('/cassandra', Object)))
-        module JacksonModule
+        module JacksonModule, { config ->
+            config.modules(new JodaModule())
+            config.withMapper{ ObjectMapper objectMapper ->
+                objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS , false)
+                objectMapper.configure(SerializationFeature.WRITE_DATE_KEYS_AS_TIMESTAMPS, true)
+            }
+        }
     }
 
     handlers {

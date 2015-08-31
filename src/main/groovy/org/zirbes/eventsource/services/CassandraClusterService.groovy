@@ -38,6 +38,7 @@ class CassandraClusterService implements Service {
                          aggregate_id text,
                          time timestamp,
                          user_id text,
+                         date_effective timestamp,
                          source_system text,
                          data blob,
                          PRIMARY KEY((id), aggregate_id, time)

@@ -6,7 +6,10 @@ import groovy.util.logging.Slf4j
 import io.netty.handler.codec.http.HttpResponseStatus
 
 import ratpack.error.ServerErrorHandler
+import ratpack.parse.NoSuchParserException
 import ratpack.handling.Context
+
+import com.fasterxml.jackson.core.JsonParseException
 
 @Slf4j
 @CompileStatic
@@ -24,6 +27,14 @@ class EventingErrorHandler implements ServerErrorHandler {
                 break
             case IllegalAccessException:
                 context.response.status(HttpResponseStatus.UNAUTHORIZED.code())
+                context.response.send(error.message)
+                break
+            case JsonParseException:
+                context.response.status(HttpResponseStatus.BAD_REQUEST.code())
+                context.response.send(error.message)
+                break
+            case NoSuchParserException:
+                context.response.status(HttpResponseStatus.BAD_REQUEST.code())
                 context.response.send(error.message)
                 break
             default:

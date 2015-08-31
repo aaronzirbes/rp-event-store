@@ -8,12 +8,13 @@ buildscript {
     }
 }
 
-apply plugin: "io.ratpack.ratpack-groovy"
-apply plugin: "com.github.johnrengelman.shadow"
-apply plugin: "idea"
+apply plugin: 'io.ratpack.ratpack-groovy'
+apply plugin: 'com.github.johnrengelman.shadow'
+apply plugin: 'idea'
 
 repositories {
     jcenter()
+    maven { url 'http://dl.bintray.com/aaronzirbes/maven' }
 }
 
 test {
@@ -30,6 +31,8 @@ dependencies {
     compile ratpack.dependency('jackson-guice')
 
     compile 'com.datastax.cassandra:cassandra-driver-core:2.1.7.1'
+    compile 'com.fasterxml.jackson.datatype:jackson-datatype-joda:2.4.0'
+    compile 'com.thirdchannel:eventsource:0.2.0'
     compile 'joda-time:joda-time:2.8.2'
 
     springloaded "org.springframework:springloaded:1.2.3.RELEASE"

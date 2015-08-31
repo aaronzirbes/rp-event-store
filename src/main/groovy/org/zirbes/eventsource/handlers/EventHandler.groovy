@@ -1,20 +1,24 @@
 package org.zirbes.eventsource.handlers
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.google.inject.Inject
+
+import com.fasterxml.jackson.datatype.joda.JodaModule
 
 import groovy.transform.CompileStatic
 import groovy.util.logging.Slf4j
-import ratpack.exec.Promise
-import ratpack.http.TypedData
-
-import java.nio.ByteBuffer
 
 import org.joda.time.LocalDateTime
+import org.zirbes.eventsource.domain.VehicleEvent
 import org.zirbes.eventsource.services.EventLogWriter
 
+import ratpack.exec.Promise
 import ratpack.groovy.handling.GroovyContext
 import ratpack.groovy.handling.GroovyHandler
+import ratpack.http.TypedData
+import ratpack.jackson.JsonRender
 
+import static ratpack.jackson.Jackson.fromJson
 import static ratpack.jackson.Jackson.json
 
 @CompileStatic
@@ -32,31 +36,27 @@ class EventHandler extends GroovyHandler {
 
     @Override
     protected void handle(GroovyContext context) {
-        String key = "${UUID.randomUUID()}:${LocalDateTime.now()}"
-        String message = 'queued'
-        int status = 204
+        UUID key = UUID.randomUUID()
+        LocalDateTime now = LocalDateTime.now()
 
-        //byte[] bytes = context.request.body.bytes
-        Promise<TypedData> bodyPromise = context.request.body
-        bodyPromise.onError{ Throwable t ->
-            log.error 'Unable to read message data: {}', t.message
-        }.then{ TypedData body ->
-            byte[] bytes = body.bytes
+        context.render(
+            context.parse(fromJson(VehicleEvent)).map{ VehicleEvent event ->
+                if (event?.data) {
+                    // Overwrite event ID / date
+                    event.id = key
+                    event.date = now.toDate()
+                    writer.writeEvent(event)
+                    log.info 'wrote event event.id={}', event.id
 
-            if (bytes.size() == 0) {
-                message = 'empty request'
-            } else {
-                status = 201
-                String byteText = new String(bytes, 'UTF-8')
-                log.trace "posting data: ${byteText}"
-
-                log.info 'Got data: {}, but got nuthin to do with it yet', bytes
-                // TODO: use rx.Observable to write to Cassandra
+                    // return response
+                    context.response.status(201)
+                    return json([key: key, date: now, message: 'queued'])
+                } else {
+                    context.response.status(204)
+                    return json([key: null, date: now, message: 'empty request'])
+                }
             }
-
-            context.response.status(status)
-            context.render(json([record: key, message: message]))
-        }
+        )
     }
 
 }
