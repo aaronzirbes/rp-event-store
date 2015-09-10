@@ -10,7 +10,8 @@ import com.google.inject.Singleton
 import groovy.transform.CompileStatic
 import groovy.util.logging.Slf4j
 
-import org.zirbes.eventsource.handlers.EventHandler
+import org.zirbes.eventsource.handlers.EventWriterHandler
+import org.zirbes.eventsource.handlers.EventReaderHandler
 import org.zirbes.eventsource.handlers.HealthHandler
 import org.zirbes.eventsource.services.CassandraClusterService
 
@@ -37,7 +38,8 @@ class EventSourceModule extends AbstractModule {
     @Override
     protected void configure() {
         bind(HealthHandler).in(Scopes.SINGLETON)
-        bind(EventHandler).in(Scopes.SINGLETON)
+        bind(EventWriterHandler).in(Scopes.SINGLETON)
+        bind(EventReaderHandler).in(Scopes.SINGLETON)
         bind(CassandraClusterService).in(Scopes.SINGLETON)
     }
 

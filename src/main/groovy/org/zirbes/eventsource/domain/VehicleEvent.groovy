@@ -8,8 +8,6 @@ import groovy.util.logging.Slf4j
 @ToString
 class VehicleEvent extends AbstractEvent<VehicleAggregate> {
 
-    String sourceSystem
-
     @Override
     void restoreData(Map data) {
         log.info "TODO: restoreData"
@@ -18,5 +16,9 @@ class VehicleEvent extends AbstractEvent<VehicleAggregate> {
     @Override
     void process(VehicleAggregate aggregate) {
         log.info "TODO: process"
+    }
+
+    static String getType() {
+        this.class.simpleName
     }
 }

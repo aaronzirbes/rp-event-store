@@ -29,6 +29,7 @@ dependencies {
 
     compile ratpack.dependency('groovy')
     compile ratpack.dependency('jackson-guice')
+    compile ratpack.dependency('rx')
 
     compile 'com.datastax.cassandra:cassandra-driver-core:2.1.7.1'
     compile 'com.fasterxml.jackson.datatype:jackson-datatype-joda:2.4.0'

@@ -2,7 +2,8 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.datatype.joda.JodaModule
 
-import org.zirbes.eventsource.handlers.EventHandler
+import org.zirbes.eventsource.handlers.EventWriterHandler
+import org.zirbes.eventsource.handlers.EventReaderHandler
 import org.zirbes.eventsource.handlers.EventingErrorHandler
 import org.zirbes.eventsource.handlers.HealthHandler
 import org.zirbes.eventsource.modules.EventSourceModule
@@ -37,11 +38,10 @@ ratpack {
     }
 
     handlers {
-        get('health') { HealthHandler healthHandler ->
-            context.insert(healthHandler)
-        }
-        post('event') { EventHandler eventHandler ->
-            context.insert(eventHandler)
-        }
+        get('health') { HealthHandler handler -> context.insert(handler) }
+        post('events') { EventWriterHandler handler -> context.insert(handler) }
+        get('events/:aggregateId') { EventReaderHandler handler -> context.insert(handler) }
     }
 }
+
+/* http get :8080/events/7b94510d-fd9e-4d4b-9a93-127a83f7fd12 */
