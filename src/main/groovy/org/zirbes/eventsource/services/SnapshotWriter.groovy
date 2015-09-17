@@ -5,14 +5,14 @@ import com.datastax.driver.core.PreparedStatement
 import com.datastax.driver.core.Session
 
 import groovy.util.logging.Slf4j
-import ratpack.exec.Promise
+
+import java.nio.ByteBuffer
 
 import javax.inject.Inject
 
-import org.joda.time.LocalDateTime
-import org.zirbes.eventsource.domain.VehicleEvent
+import org.zirbes.eventsource.domain.BicycleSnapshot
 
-import java.nio.ByteBuffer
+import ratpack.exec.Promise
 
 @Slf4j
 class SnapshotWriter {
@@ -24,41 +24,35 @@ class SnapshotWriter {
     SnapshotWriter(Session session) {
         this.session = session
         this.insert = session.prepare('''
-            INSERT INTO event (
+            INSERT INTO snapshot (
                 id,
-                revision,
-                type,
                 aggregate_id,
+                revision,
                 time,
-                user_id,
-                date_effective,
-                source_system,
                 data
-            )
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);
+            ) VALUES (?, ?, ?, ?, ?);
             '''
         )
     }
 
-    void writeEvent(VehicleEvent event) {
-        insertData(event)
+    void writeSnapshot(BicycleSnapshot snapshot) {
+        insertData(snapshot)
     }
 
-    void insertData(VehicleEvent event) {
+    void insertData(BicycleSnapshot snapshot) {
         Promise.of{
             BoundStatement bs = new BoundStatement(insert).bind(
-                    event.id.toString(),
-                    event.revision,
-                    VehicleEvent.simpleName,
-                    event.aggregateId.toString(),
-                    event.date,
-                    event.userId,
-                    event.dateEffective,
-                    event.sourceSystem,
-                    ByteBuffer.wrap(event.data.bytes)
+                    snapshot.id,
+                    snapshot.aggregateId,
+                    snapshot.revision,
+                    snapshot.date,
+                    ByteBuffer.wrap(snapshot.data.bytes)
             )
             session.execute(bs)
-            log.info 'Wrote key={} date={} event={}', event.id, event.date, event.data
+            log.info(
+                'Wrote key={} aggregateId={} date={} snapshot={}',
+                snapshot.id, snapshot.aggregateId, snapshot.date, snapshot.data
+            )
         }.then{}
 
     }

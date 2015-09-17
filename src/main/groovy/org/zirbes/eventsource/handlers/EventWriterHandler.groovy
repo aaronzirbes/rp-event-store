@@ -6,7 +6,7 @@ import groovy.transform.CompileStatic
 import groovy.util.logging.Slf4j
 
 import org.joda.time.LocalDateTime
-import org.zirbes.eventsource.domain.VehicleEvent
+import com.thirdchannel.eventsource.AbstractEvent
 import org.zirbes.eventsource.services.EventLogWriter
 
 import ratpack.groovy.handling.GroovyContext
@@ -34,7 +34,7 @@ class EventWriterHandler extends GroovyHandler {
         LocalDateTime now = LocalDateTime.now()
 
         context.render(
-            context.parse(fromJson(VehicleEvent)).map{ VehicleEvent event ->
+            context.parse(fromJson(AbstractEvent)).map{ AbstractEvent event ->
                 if (event?.data) {
                     // Overwrite event ID / date
                     event.id = key

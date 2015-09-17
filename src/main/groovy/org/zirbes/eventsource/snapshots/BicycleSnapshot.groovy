@@ -1,8 +1,10 @@
 package org.zirbes.eventsource.domain
 
-import com.thirdchannel.eventsource.AbstractAggregate
+import com.thirdchannel.eventsource.Snapshot
 
-class VehicleAggregate extends AbstractAggregate {
+class BicycleSnapshot implements Snapshot {
+
+    // ???!
 
     String make
     String model
@@ -11,5 +13,6 @@ class VehicleAggregate extends AbstractAggregate {
     Integer tirePressure
     Integer headingDegrees
     Boolean locked
+
 
 }
