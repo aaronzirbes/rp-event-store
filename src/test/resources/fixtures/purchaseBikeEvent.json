@@ -1,0 +1,9 @@
+{
+    "aggregateId" : "dd4cad36-85be-48b3-b2e1-51cc93712e4c",
+    "clazz" : "PurchaseBikeEvent",
+    "make" : "Surly",
+    "model" : "Steamroller",
+    "revision" : 1,
+    "userId" : "ajz",
+    "wheelSize" : 700
+}
