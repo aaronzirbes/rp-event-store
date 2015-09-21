@@ -1,20 +1,22 @@
-package org.zirbes.eventsource.domain
+package org.zirbes.eventsource.events
 
 import com.fasterxml.jackson.core.type.TypeReference
-import com.fasterxml.jackson.databind.ObjectMapper
 
-import spock.lang.Shared
-import spock.lang.Specification
+import org.zirbes.eventsource.JsonSpecification
+import org.zirbes.eventsource.events.AdjustSeatHeightEvent
+import org.zirbes.eventsource.events.FlatTireEvent
+import org.zirbes.eventsource.events.InflateTireEvent
+import org.zirbes.eventsource.events.LockBikeEvent
+import org.zirbes.eventsource.events.PurchaseBikeEvent
+import org.zirbes.eventsource.events.RepairFlatEvent
+import org.zirbes.eventsource.events.RideBikeEvent
+import org.zirbes.eventsource.events.UnockBikeEvent
+import org.zirbes.eventsource.events.VehicleEvent
+
 import spock.lang.Unroll
 
-class EventJsonMarshallingSpec extends Specification {
-
-    @Shared
-    private ObjectMapper objectMapper
-
-    void setupSpec() {
-        objectMapper = new ObjectMapper()
-    }
+/** Test for marshalling incoming JSON to the corresponding VehicleEvent */
+class EventJsonMarshallingSpec extends JsonSpecification {
 
     @Unroll
     void 'Marshalling #clazz JSON and back to JSON preserves all data using #fixture'() {
@@ -23,9 +25,12 @@ class EventJsonMarshallingSpec extends Specification {
         String json = jsonFromFixture(fixture)
 
         when: 'we marshal it to the object'
-        def obj = objectMapper.readValue(json, clazz)
+        VehicleEvent obj = objectMapper.readValue(json, VehicleEvent)
 
-        and: "we copy it to a Map and remove fields we don't care about"
+        then:
+        obj.class == clazz
+
+        when: "we copy it to a Map and remove fields we don't care about"
         Map map = objectMapper.convertValue(obj, new TypeReference<Map<String, Object>>(){})
         map.remove('id')
         map.remove('date')
@@ -51,31 +56,5 @@ class EventJsonMarshallingSpec extends Specification {
         'vehicleEvent'          | VehicleEvent
 
     }
-
-    protected String toJson(Object object) {
-        return objectMapper.writeValueAsString(object)
-    }
-
-    protected String jsonFromFixture(String fixture) {
-        String path = "/fixtures/${fixture}.json"
-        return jsonFromResource(path)
-    }
-
-    protected String jsonFromResource(String resourcePath) {
-        InputStream inputStream = this.class.getResourceAsStream(resourcePath)
-        if (inputStream) {
-            return stripWhiteSpace(inputStream.text)
-        }
-        throw new FileNotFoundException(resourcePath)
-    }
-
-    protected String stripWhiteSpace(String str) {
-        StringBuffer out = new StringBuffer()
-        str.eachLine{
-            out << it.replaceFirst(/": /, '":').replaceFirst(/" : /, '":').trim()
-        }
-        return out.toString()
-    }
-
 
 }

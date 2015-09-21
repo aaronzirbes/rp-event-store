@@ -1,14 +1,14 @@
 package org.zirbes.eventsource
 
-import org.zirbes.eventsource.domain.AdjustSeatHeightEvent
 import org.zirbes.eventsource.domain.Bicycle
-import org.zirbes.eventsource.domain.FlatTireEvent
-import org.zirbes.eventsource.domain.InflateTireEvent
-import org.zirbes.eventsource.domain.LockBikeEvent
-import org.zirbes.eventsource.domain.PurchaseBikeEvent
-import org.zirbes.eventsource.domain.RepairFlatEvent
-import org.zirbes.eventsource.domain.RideBikeEvent
-import org.zirbes.eventsource.domain.UnockBikeEvent
+import org.zirbes.eventsource.events.AdjustSeatHeightEvent
+import org.zirbes.eventsource.events.FlatTireEvent
+import org.zirbes.eventsource.events.InflateTireEvent
+import org.zirbes.eventsource.events.LockBikeEvent
+import org.zirbes.eventsource.events.PurchaseBikeEvent
+import org.zirbes.eventsource.events.RepairFlatEvent
+import org.zirbes.eventsource.events.RideBikeEvent
+import org.zirbes.eventsource.events.UnockBikeEvent
 
 import spock.lang.Specification
 
@@ -17,7 +17,7 @@ class BicycleSourcingSpec extends Specification {
     void 'can build aggregate from event source'() {
         given:
         Bicycle bicycle = new Bicycle(
-            aggregateId: "dd4cad36-85be-48b3-b2e1-51cc93712e4c",
+            id: UUID.fromString("dd4cad36-85be-48b3-b2e1-51cc93712e4c"),
         )
 
         when:

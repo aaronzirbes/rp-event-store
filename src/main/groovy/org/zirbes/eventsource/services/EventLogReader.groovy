@@ -7,14 +7,15 @@ import com.datastax.driver.core.Row
 import com.datastax.driver.core.Session
 
 import groovy.util.logging.Slf4j
-import org.zirbes.eventsource.domain.VehicleEvent
-import rx.Observable
+
+import java.nio.ByteBuffer
 
 import javax.inject.Inject
 
 import org.joda.time.LocalDateTime
+import org.zirbes.eventsource.events.VehicleEvent
 
-import java.nio.ByteBuffer
+import rx.Observable
 
 @Slf4j
 class EventLogReader {
