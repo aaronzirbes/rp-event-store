@@ -7,15 +7,6 @@ import groovy.mock.interceptor.Ignore
 
 import org.junit.Ignore
 import org.zirbes.eventsource.JsonSpecification
-import org.zirbes.eventsource.events.AdjustSeatHeightEvent
-import org.zirbes.eventsource.events.FlatTireEvent
-import org.zirbes.eventsource.events.InflateTireEvent
-import org.zirbes.eventsource.events.LockBikeEvent
-import org.zirbes.eventsource.events.PurchaseBikeEvent
-import org.zirbes.eventsource.events.RepairFlatEvent
-import org.zirbes.eventsource.events.RideBikeEvent
-import org.zirbes.eventsource.events.UnockBikeEvent
-import org.zirbes.eventsource.events.VehicleEvent
 
 import spock.lang.Ignore
 import spock.lang.Specification
@@ -28,11 +19,13 @@ class EventJsonDeserializationSpec extends JsonSpecification {
         List<VehicleEvent> events = [
             new PurchaseBikeEvent(make: 'Surly', model: 'Steamroller', wheelSize: 700),
             new AdjustSeatHeightEvent(height: 4),
+            new TurnOnLightEvent(light: 'rear'),
             new InflateTireEvent(tire: 'front', psi: 80),
             new InflateTireEvent(tire: 'rear', psi: 80),
             new FlatTireEvent(tire: 'front'),
             new InflateTireEvent(tire: 'front', psi: 20),
             new RepairFlatEvent(tire: 'front'),
+            new TurnOffLightEvent(light: 'rear'),
             new InflateTireEvent(tire: 'front', psi: 70),
             new LockBikeEvent(),
             new UnockBikeEvent(),
@@ -48,18 +41,20 @@ class EventJsonDeserializationSpec extends JsonSpecification {
         List<VehicleEvent> backAgain = objectMapper.readValue(json, typeRef)
 
         then:
-        events.size() == 11
+        events.size() == 13
         events[0].class == PurchaseBikeEvent
         events[1].class == AdjustSeatHeightEvent
-        events[2].class == InflateTireEvent
+        events[2].class == TurnOnLightEvent
         events[3].class == InflateTireEvent
-        events[4].class == FlatTireEvent
-        events[5].class == InflateTireEvent
-        events[6].class == RepairFlatEvent
-        events[7].class == InflateTireEvent
-        events[8].class == LockBikeEvent
-        events[9].class == UnockBikeEvent
-        events[10].class == RideBikeEvent
+        events[4].class == InflateTireEvent
+        events[5].class == FlatTireEvent
+        events[6].class == InflateTireEvent
+        events[7].class == RepairFlatEvent
+        events[8].class == TurnOffLightEvent
+        events[9].class == InflateTireEvent
+        events[10].class == LockBikeEvent
+        events[11].class == UnockBikeEvent
+        events[12].class == RideBikeEvent
 
     }
 

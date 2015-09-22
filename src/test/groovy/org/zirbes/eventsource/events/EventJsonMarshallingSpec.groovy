@@ -3,15 +3,6 @@ package org.zirbes.eventsource.events
 import com.fasterxml.jackson.core.type.TypeReference
 
 import org.zirbes.eventsource.JsonSpecification
-import org.zirbes.eventsource.events.AdjustSeatHeightEvent
-import org.zirbes.eventsource.events.FlatTireEvent
-import org.zirbes.eventsource.events.InflateTireEvent
-import org.zirbes.eventsource.events.LockBikeEvent
-import org.zirbes.eventsource.events.PurchaseBikeEvent
-import org.zirbes.eventsource.events.RepairFlatEvent
-import org.zirbes.eventsource.events.RideBikeEvent
-import org.zirbes.eventsource.events.UnockBikeEvent
-import org.zirbes.eventsource.events.VehicleEvent
 
 import spock.lang.Unroll
 
@@ -52,6 +43,8 @@ class EventJsonMarshallingSpec extends JsonSpecification {
         'purchaseBikeEvent'     | PurchaseBikeEvent
         'repairFlatEvent'       | RepairFlatEvent
         'rideBikeEvent'         | RideBikeEvent
+        'turnOnLightEvent'      | TurnOnLightEvent
+        'turnOffLightEvent'     | TurnOffLightEvent
         'unockBikeEvent'        | UnockBikeEvent
         'vehicleEvent'          | VehicleEvent
 

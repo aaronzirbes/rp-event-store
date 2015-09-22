@@ -14,7 +14,12 @@ Event Sourcing model:
 
 ## TODOs
 
-Apache Avro for model storage and aggregate compatibility checks?
+* Write events from JSON to Cassandra
+* Load Events from Cassandra
+* Build Aggregate from events loaded from Cassandra
+
+## Nice to have TODOs
+* Apache Avro for model storage and aggregate compatibility checks?
 
 ## Demo Model
 
@@ -47,8 +52,5 @@ Running Elasticsearch in a docker container
     docker pull elasticsearch:1.7
     docker run --name evsrc-elasticsearch -p 9200:9200 -p 9300:9300 -d elasticsearch:1.7
 
-# Write events from JSON to Cassandra
 
-# Load Events from Cassandra
 
-# Build Aggregate from events loaded from Cassandra

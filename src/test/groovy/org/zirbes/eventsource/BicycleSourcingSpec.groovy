@@ -8,6 +8,8 @@ import org.zirbes.eventsource.events.LockBikeEvent
 import org.zirbes.eventsource.events.PurchaseBikeEvent
 import org.zirbes.eventsource.events.RepairFlatEvent
 import org.zirbes.eventsource.events.RideBikeEvent
+import org.zirbes.eventsource.events.TurnOffLightEvent
+import org.zirbes.eventsource.events.TurnOnLightEvent
 import org.zirbes.eventsource.events.UnockBikeEvent
 
 import spock.lang.Specification
@@ -24,11 +26,13 @@ class BicycleSourcingSpec extends Specification {
         bicycle.applyChanges([
             new PurchaseBikeEvent(make: 'Surly', model: 'Steamroller', wheelSize: 700),
             new AdjustSeatHeightEvent(height: 4),
+            new TurnOnLightEvent(light: 'rear'),
             new InflateTireEvent(tire: 'front', psi: 80),
             new InflateTireEvent(tire: 'rear', psi: 80),
             new FlatTireEvent(tire: 'front'),
             new InflateTireEvent(tire: 'front', psi: 20),
             new RepairFlatEvent(tire: 'front'),
+            new TurnOffLightEvent(light: 'rear'),
             new InflateTireEvent(tire: 'front', psi: 70),
             new LockBikeEvent(),
             new UnockBikeEvent(),
@@ -44,7 +48,10 @@ class BicycleSourcingSpec extends Specification {
         bicycle.headingDegrees == 0
         bicycle.velocity == 12
         !bicycle.locked
-
+        !bicycle.lights.front.on
+        bicycle.lights.front.color == 'white'
+        bicycle.lights.rear.color == 'red'
+        bicycle.tires.front.psi == 70
     }
 }
 
