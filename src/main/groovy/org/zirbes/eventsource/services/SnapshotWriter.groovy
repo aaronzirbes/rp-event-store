@@ -11,7 +11,6 @@ import java.nio.ByteBuffer
 import javax.annotation.PostConstruct
 import javax.inject.Inject
 
-import org.zirbes.eventsource.domain.BicycleSnapshot
 import com.thirdchannel.eventsource.Snapshot
 
 import ratpack.exec.Promise

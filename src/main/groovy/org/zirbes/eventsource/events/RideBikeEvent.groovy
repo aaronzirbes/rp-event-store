@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder
 import groovy.transform.ToString
 import groovy.util.logging.Slf4j
 
-import org.zirbes.eventsource.domain.Bicycle
+import org.zirbes.eventsource.aggregates.Bicycle
 
 @Slf4j
 @ToString

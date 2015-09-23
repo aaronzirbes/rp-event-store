@@ -1,6 +1,6 @@
 package org.zirbes.eventsource.handlers
 
-import org.zirbes.eventsource.domain.Bicycle
+import org.zirbes.eventsource.aggregates.Bicycle
 import org.zirbes.eventsource.services.AggregateReader
 
 import ratpack.groovy.handling.GroovyContext

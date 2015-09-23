@@ -1,0 +1,2 @@
+cluster.name: elastic_docker
+http.enabled: false

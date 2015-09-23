@@ -3,12 +3,12 @@ package org.zirbes.eventsource.services
 import com.datastax.driver.core.BoundStatement
 import com.datastax.driver.core.PreparedStatement
 import com.datastax.driver.core.Session
-import com.fasterxml.jackson.annotation.JsonInclude.Include
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.thirdchannel.eventsource.AbstractEvent
 
 import groovy.util.logging.Slf4j
+
+import org.zirbes.eventsource.ObjectMapperBuilder
 
 @Slf4j
 abstract class AbstractWriter {
@@ -24,7 +24,7 @@ abstract class AbstractWriter {
 
     AbstractWriter(Session session) {
         this.session = session
-        this.objectMapper = new ObjectMapper().setSerializationInclusion(Include.NON_NULL)
+        this.objectMapper = ObjectMapperBuilder.build()
     }
 
     void setup() {

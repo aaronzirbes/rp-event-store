@@ -5,7 +5,7 @@ import com.google.inject.Inject
 import groovy.transform.CompileStatic
 import groovy.util.logging.Slf4j
 
-import org.zirbes.eventsource.domain.Bicycle
+import org.zirbes.eventsource.aggregates.Bicycle
 import org.zirbes.eventsource.services.AggregateReader
 
 import ratpack.groovy.handling.GroovyContext

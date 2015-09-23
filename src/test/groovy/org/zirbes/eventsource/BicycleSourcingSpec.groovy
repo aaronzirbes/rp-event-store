@@ -1,6 +1,6 @@
 package org.zirbes.eventsource
 
-import org.zirbes.eventsource.domain.Bicycle
+import org.zirbes.eventsource.aggregates.Bicycle
 import org.zirbes.eventsource.events.VehicleEvent
 
 import spock.lang.Specification

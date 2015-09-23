@@ -1,7 +1,7 @@
 package org.zirbes.eventsource.services
 
 import org.zirbes.eventsource.BikeEventFixtureBuilder
-import org.zirbes.eventsource.domain.Bicycle
+import org.zirbes.eventsource.aggregates.Bicycle
 import org.zirbes.eventsource.events.VehicleEvent
 
 import rx.Observable

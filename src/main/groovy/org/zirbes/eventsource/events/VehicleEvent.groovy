@@ -8,7 +8,7 @@ import com.thirdchannel.eventsource.AbstractEvent
 
 import groovy.transform.ToString
 
-import org.zirbes.eventsource.domain.Bicycle
+import org.zirbes.eventsource.aggregates.Bicycle
 
 @JsonPropertyOrder(alphabetic=true)
 @JsonIgnoreProperties(ignoreUnknown=true)

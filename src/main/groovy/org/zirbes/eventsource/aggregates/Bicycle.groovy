@@ -1,4 +1,4 @@
-package org.zirbes.eventsource.domain
+package org.zirbes.eventsource.aggregates
 
 import com.thirdchannel.eventsource.AbstractAggregate
 

@@ -5,7 +5,7 @@ import groovy.util.logging.Slf4j
 import javax.inject.Inject
 
 import org.joda.time.LocalDateTime
-import org.zirbes.eventsource.domain.Bicycle
+import org.zirbes.eventsource.aggregates.Bicycle
 import org.zirbes.eventsource.events.VehicleEvent
 
 import rx.Observable

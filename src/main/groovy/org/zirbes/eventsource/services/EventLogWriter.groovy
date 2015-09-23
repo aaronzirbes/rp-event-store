@@ -71,6 +71,8 @@ class EventLogWriter extends AbstractWriter {
         )
         session.execute(bs)
         log.info 'Wrote key={} date={} event={}', event.id, event.date, event.data
+
+        // TODO: Schedule Aggregate push to search
     }
 
 }
