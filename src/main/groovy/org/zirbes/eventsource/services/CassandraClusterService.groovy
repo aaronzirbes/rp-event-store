@@ -33,6 +33,7 @@ class CassandraClusterService implements Service {
     static final Map<String, String> CREATE_TABLES = [
         'event': '''CREATE TABLE bicycle.event (
                          id uuid,
+                         type text,
                          revision int,
                          aggregate_id uuid,
                          time timestamp,
@@ -45,8 +46,9 @@ class CassandraClusterService implements Service {
 
         'snapshot': '''CREATE TABLE bicycle.snapshot (
                          id uuid,
-                         aggregate_id uuid,
+                         type text,
                          revision int,
+                         aggregate_id uuid,
                          time timestamp,
                          data blob,
                          PRIMARY KEY((aggregate_id), time, id)

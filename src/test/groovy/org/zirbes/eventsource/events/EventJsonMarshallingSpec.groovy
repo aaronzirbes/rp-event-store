@@ -46,7 +46,6 @@ class EventJsonMarshallingSpec extends JsonSpecification {
         'turnOnLightEvent'      | TurnOnLightEvent
         'turnOffLightEvent'     | TurnOffLightEvent
         'unockBikeEvent'        | UnockBikeEvent
-        'vehicleEvent'          | VehicleEvent
 
     }
 

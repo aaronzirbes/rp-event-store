@@ -1,59 +1,76 @@
 package org.zirbes.eventsource.services
 
 import com.datastax.driver.core.BoundStatement
-import com.datastax.driver.core.PreparedStatement
 import com.datastax.driver.core.Session
-
 import com.thirdchannel.eventsource.AbstractEvent
 
 import groovy.util.logging.Slf4j
-import ratpack.exec.Promise
-
-import javax.inject.Inject
-
-import org.joda.time.LocalDateTime
 
 import java.nio.ByteBuffer
 
-@Slf4j
-class EventLogWriter {
+import javax.annotation.PostConstruct
+import javax.inject.Inject
 
-    protected final Session session
-    protected final PreparedStatement insert
+import ratpack.exec.Promise
+
+@Slf4j
+class EventLogWriter extends AbstractWriter {
+
+    protected static final String INSERT = '''INSERT INTO event (
+                                                  id,
+                                                  type,
+                                                  revision,
+                                                  aggregate_id,
+                                                  time,
+                                                  user_id,
+                                                  date_effective,
+                                                  data
+                                              )
+                                              VALUES (?, ?, ?, ?, ?, ?, ?, ?);'''
+
+    protected static final List<String> BASE_FIELDS = [
+        'id',
+        'clazz',
+        'revision',
+        'aggregateId',
+        'date',
+        'userId',
+        'dateEffective'
+    ].asImmutable()
+
+    @Override
+    protected String getInsertStatement() { INSERT }
+
+    @Override
+    protected List<String> getBaseFields() { BASE_FIELDS }
 
     @Inject
     EventLogWriter(Session session) {
-        this.session = session
-        this.insert = session.prepare('''
-            INSERT INTO event (
-                id,
-                revision,
-                aggregate_id,
-                time,
-                user_id,
-                date_effective,
-                data
-            )
-            VALUES (?, ?, ?, ?, ?, ?, ?);
-            '''
-        )
+        super(session)
     }
 
-    void writeEvent(AbstractEvent event) {
-        Promise.of{
-            BoundStatement bs = new BoundStatement(insert).bind(
-                    event.id,
-                    event.revision,
-                    event.aggregateId,
-                    event.date,
-                    event.userId,
-                    event.dateEffective,
-                    ByteBuffer.wrap(event.data.bytes)
-            )
-            session.execute(bs)
-            log.info 'Wrote key={} date={} event={}', event.id, event.date, event.data
-        }.then{}
+    @PostConstruct
+    void setup() {
+        super.setup()
+    }
 
+    void writeEventAsync(AbstractEvent event) {
+        Promise.of{ writeEvent(event) }.then{}
+    }
+
+    protected void writeEvent(AbstractEvent event) {
+        BoundStatement bs = insert.bind(
+            event.id,
+            event.clazz,
+            event.revision,
+            event.aggregateId,
+            event.date,
+            event.userId,
+            event.dateEffective,
+            ByteBuffer.wrap(dataFromAbstract(event))
+        )
+        session.execute(bs)
+        log.info 'Wrote key={} date={} event={}', event.id, event.date, event.data
     }
 
 }

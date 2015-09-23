@@ -17,6 +17,7 @@ import org.zirbes.eventsource.domain.Bicycle
     use=JsonTypeInfo.Id.CLASS,
     include=JsonTypeInfo.As.PROPERTY,
     property='clazz')
+// TODO: Abstract
 class VehicleEvent extends AbstractEvent<Bicycle> {
 
     @Override

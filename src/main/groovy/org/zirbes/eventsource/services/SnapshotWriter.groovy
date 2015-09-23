@@ -8,53 +8,66 @@ import groovy.util.logging.Slf4j
 
 import java.nio.ByteBuffer
 
+import javax.annotation.PostConstruct
 import javax.inject.Inject
 
 import org.zirbes.eventsource.domain.BicycleSnapshot
+import com.thirdchannel.eventsource.Snapshot
 
 import ratpack.exec.Promise
 
 @Slf4j
-class SnapshotWriter {
+class SnapshotWriter extends AbstractWriter {
 
-    protected final Session session
-    protected final PreparedStatement insert
+    protected static final String INSERT = '''INSERT INTO snapshot (
+                                                  id,
+                                                  type,
+                                                  aggregate_id,
+                                                  revision,
+                                                  time,
+                                                  data
+                                              ) VALUES (?, ?, ?, ?, ?);'''
+
+    protected static final List<String> BASE_FIELDS = [
+        'id',
+        'clazz',
+        'revision',
+        'aggregateId',
+        'date'
+    ].asImmutable()
 
     @Inject
     SnapshotWriter(Session session) {
-        this.session = session
-        this.insert = session.prepare('''
-            INSERT INTO snapshot (
-                id,
-                aggregate_id,
-                revision,
-                time,
-                data
-            ) VALUES (?, ?, ?, ?, ?);
-            '''
+        super(session)
+    }
+
+    @PostConstruct
+    void setup() {
+        super.setup()
+    }
+
+    @Override
+    protected String getInsertStatement() { INSERT }
+
+    @Override
+    protected List<String> getBaseFields() { BASE_FIELDS }
+
+    void writeSnapshotAsync(Snapshot snapshot) {
+        Promise.of{ writeSnapshot(snapshot) }.then{}
+    }
+
+    protected void writeSnapshot(Snapshot snapshot) {
+        // TODO: Vette this out
+        BoundStatement bs = insert.bind(
+            snapshot.id,
+            snapshot.clazz,
+            snapshot.aggregateId,
+            snapshot.revision,
+            snapshot.date,
+            ByteBuffer.wrap(dataFromEvent(snapshot))
         )
-    }
-
-    void writeSnapshot(BicycleSnapshot snapshot) {
-        insertData(snapshot)
-    }
-
-    void insertData(BicycleSnapshot snapshot) {
-        Promise.of{
-            BoundStatement bs = new BoundStatement(insert).bind(
-                    snapshot.id,
-                    snapshot.aggregateId,
-                    snapshot.revision,
-                    snapshot.date,
-                    ByteBuffer.wrap(snapshot.data.bytes)
-            )
-            session.execute(bs)
-            log.info(
-                'Wrote key={} aggregateId={} date={} snapshot={}',
-                snapshot.id, snapshot.aggregateId, snapshot.date, snapshot.data
-            )
-        }.then{}
-
+        session.execute(bs)
+        log.info 'Wrote key={} date={} snapshot={}', snapshot.id, snapshot.date, snapshot.data
     }
 
 }

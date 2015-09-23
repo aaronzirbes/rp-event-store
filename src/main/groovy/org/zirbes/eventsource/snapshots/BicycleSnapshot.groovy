@@ -4,7 +4,7 @@ import com.thirdchannel.eventsource.Snapshot
 
 class BicycleSnapshot implements Snapshot {
 
-    // ???!
+    // TODO: Figure this out ?!?!
 
     String make
     String model
