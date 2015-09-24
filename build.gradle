@@ -1,0 +1,50 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath "io.ratpack:ratpack-gradle:${ratpackVersion}"
+        classpath "com.github.jengelman.gradle.plugins:shadow:1.2.2"
+    }
+}
+
+apply plugin: 'io.ratpack.ratpack-groovy'
+apply plugin: 'com.github.johnrengelman.shadow'
+apply plugin: 'idea'
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+repositories {
+    jcenter()
+    maven { url 'http://dl.bintray.com/aaronzirbes/maven' }
+}
+
+test {
+    jvmArgs '-Duser.timezone=UTC'
+}
+
+run {
+    jvmArgs '-Dlogging.level.org.zirbes.eventsource=INFO'
+}
+
+dependencies {
+
+    compile ratpack.dependency('groovy')
+    compile ratpack.dependency('jackson-guice')
+    compile ratpack.dependency('rx')
+
+    compile 'org.elasticsearch:elasticsearch:1.7.2'
+    compile 'com.datastax.cassandra:cassandra-driver-core:2.1.7.1'
+    compile 'com.fasterxml.jackson.datatype:jackson-datatype-joda:2.4.0'
+    compile 'com.thirdchannel:eventsource:0.2.0'
+    compile 'joda-time:joda-time:2.8.2'
+
+    springloaded "org.springframework:springloaded:1.2.3.RELEASE"
+
+    runtime 'org.slf4j:slf4j-simple:1.7.12'
+
+    testCompile "org.spockframework:spock-core:${spockVersion}"
+    testCompile 'cglib:cglib-nodep:3.1'
+    testCompile 'org.objenesis:objenesis:2.1'
+}

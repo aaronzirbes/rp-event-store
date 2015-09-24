@@ -1,0 +1,9 @@
+http.enabled: false
+cluster.name: elasticsearch
+node:
+  name: rp-eventsource-client
+  client: true
+  data: false
+transport.tcp.connect_timeout: 5s
+discovery.zen.ping.multicast.enabled: false
+discovery.zen.ping.unicast.hosts: docker:9300

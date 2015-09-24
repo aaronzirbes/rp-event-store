@@ -1,0 +1,7 @@
+{
+    "clazz" : "org.zirbes.eventsource.events.VehicleEvent",
+    "aggregateId" : "dd4cad36-85be-48b3-b2e1-51cc93712e4c",
+    "data" : "{ \"foo\": \"bar\" }",
+    "revision" : 1,
+    "userId" : "ajz"
+}
