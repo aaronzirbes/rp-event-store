@@ -8,7 +8,6 @@ import groovy.util.logging.Slf4j
 
 import java.nio.ByteBuffer
 
-import javax.annotation.PostConstruct
 import javax.inject.Inject
 
 import com.thirdchannel.eventsource.Snapshot
@@ -38,6 +37,7 @@ class SnapshotWriter extends AbstractWriter {
     @Inject
     SnapshotWriter(Session session) {
         super(session)
+        this.insert = new BoundStatement(session.prepare(insertStatement))
     }
 
     @Override
@@ -45,17 +45,6 @@ class SnapshotWriter extends AbstractWriter {
 
     @Override
     protected List<String> getBaseFields() { BASE_FIELDS }
-
-    @Override
-    @PostConstruct
-    void setup() {
-        PreparedStatement ps = session.prepare(insertStatement)
-        this.insert = new BoundStatement(ps)
-    }
-
-    void writeSnapshotAsync(Snapshot snapshot) {
-        Promise.of{ writeSnapshot(snapshot) }.then{}
-    }
 
     protected void writeSnapshot(Snapshot snapshot) {
         // TODO: Vette this out
@@ -67,7 +56,7 @@ class SnapshotWriter extends AbstractWriter {
             snapshot.date,
             ByteBuffer.wrap(dataFromEvent(snapshot))
         )
-        session.execute(bs)
+        session.executeAsync(bs)
         log.info 'Wrote key={} date={} snapshot={}', snapshot.id, snapshot.date, snapshot.data
     }
 

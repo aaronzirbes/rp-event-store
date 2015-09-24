@@ -1,0 +1,8 @@
+{
+    "clazz" : "org.zirbes.eventsource.events.InflateTireEvent",
+    "aggregateId" : "dd4cad36-85be-48b3-b2e1-51cc93712e4c",
+    "psi" : 90,
+    "revision" : 1,
+    "tire" : "front",
+    "userId" : "ajz"
+}

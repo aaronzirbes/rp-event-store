@@ -10,12 +10,14 @@ import com.google.inject.Singleton
 import groovy.transform.CompileStatic
 import groovy.util.logging.Slf4j
 
+import org.zirbes.eventsource.handlers.AggregateReaderHandler
 import org.zirbes.eventsource.handlers.EventReaderHandler
 import org.zirbes.eventsource.handlers.EventWriterHandler
 import org.zirbes.eventsource.handlers.HealthHandler
 import org.zirbes.eventsource.services.AggregatePublisher
 import org.zirbes.eventsource.services.CassandraClusterService
 import org.zirbes.eventsource.services.ElasticsearchService
+import org.zirbes.eventsource.services.EventLogReader
 
 @CompileStatic
 @Slf4j
@@ -42,8 +44,10 @@ class EventSourceModule extends AbstractModule {
         bind(HealthHandler).in(Scopes.SINGLETON)
         bind(EventWriterHandler).in(Scopes.SINGLETON)
         bind(EventReaderHandler).in(Scopes.SINGLETON)
+        bind(AggregateReaderHandler).in(Scopes.SINGLETON)
         bind(CassandraClusterService).in(Scopes.SINGLETON)
         bind(ElasticsearchService).in(Scopes.SINGLETON)
+        bind(EventLogReader).in(Scopes.SINGLETON)
         bind(AggregatePublisher).in(Scopes.SINGLETON)
     }
 

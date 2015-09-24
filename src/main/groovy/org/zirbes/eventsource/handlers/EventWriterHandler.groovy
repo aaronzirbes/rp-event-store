@@ -49,7 +49,7 @@ class EventWriterHandler extends GroovyHandler {
         event.date = now.toDate()
         if (event) {
             // Overwrite event ID / date
-            writer.writeEventAsync(event)
+            writer.writeEvent(event)
             log.info 'wrote event event.id={}', event.id
             // return response
             context.response.status(201)

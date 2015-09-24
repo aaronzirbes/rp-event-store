@@ -5,6 +5,7 @@ import com.fasterxml.jackson.datatype.joda.JodaModule
 import org.zirbes.eventsource.handlers.EventWriterHandler
 import org.zirbes.eventsource.handlers.EventReaderHandler
 import org.zirbes.eventsource.handlers.EventingErrorHandler
+import org.zirbes.eventsource.handlers.AggregateReaderHandler
 import org.zirbes.eventsource.handlers.HealthHandler
 import org.zirbes.eventsource.modules.EventSourceModule
 
@@ -41,6 +42,7 @@ ratpack {
         get('health') { HealthHandler handler -> context.insert(handler) }
         post('events') { EventWriterHandler handler -> context.insert(handler) }
         get('events/:aggregateId') { EventReaderHandler handler -> context.insert(handler) }
+        get('aggregate/:aggregateId') { AggregateReaderHandler handler -> context.insert(handler) }
     }
 }
 

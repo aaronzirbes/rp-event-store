@@ -51,10 +51,8 @@ class EventLogReader {
     EventLogReader(Session session) {
         this.session = session
         this.objectMapper = new ObjectMapper().setSerializationInclusion(Include.NON_NULL)
-    }
 
-    @PostConstruct
-    void setup() {
+        // Setup queries
         this.events = new BoundStatement(session.prepare(SELECT_ID))
         this.eventsUntil = new BoundStatement(session.prepare(SELECT_TIME_LT))
         this.eventsSince = new BoundStatement(session.prepare(SELECT_TIME_GT))

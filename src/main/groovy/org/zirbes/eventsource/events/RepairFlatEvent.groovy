@@ -14,6 +14,8 @@ import org.zirbes.eventsource.aggregates.Bicycle
 @JsonIgnoreProperties(ignoreUnknown=true)
 class RepairFlatEvent extends VehicleEvent {
 
+    static final boolean HOLDS_PRESSURE = true
+
     String tire
 
     @Override
@@ -23,7 +25,7 @@ class RepairFlatEvent extends VehicleEvent {
 
     @Override
     void process(Bicycle bicycle) {
-        bicycle.tires[tire].holdsPressure = true
+        bicycle.tires[tire].holdsPressure = HOLDS_PRESSURE
     }
 
 }

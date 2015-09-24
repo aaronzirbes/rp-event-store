@@ -1,15 +1,16 @@
 package org.zirbes.eventsource.services
 
 import com.datastax.driver.core.BoundStatement
-import com.datastax.driver.core.PreparedStatement
 import com.datastax.driver.core.Session
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.ObjectMapper
 
+import groovy.transform.CompileStatic
 import groovy.util.logging.Slf4j
 
 import org.zirbes.eventsource.ObjectMapperBuilder
 
+@CompileStatic
 @Slf4j
 abstract class AbstractWriter {
 
@@ -27,13 +28,11 @@ abstract class AbstractWriter {
         this.objectMapper = ObjectMapperBuilder.build()
     }
 
-    abstract void setup()
-
     /** Uses Jackson for now, it'd be faster to use apache Avro down the line */
     protected byte[] dataFromAbstract(Object event) {
         // TODO: Use ratpack.jackson.Jackson
         // Convert to map
-        Map<String, Object> eventMap = objectMapper.convertValue(event, mapRef)
+        Map<String, Object> eventMap = (Map<String, Object>) objectMapper.convertValue(event, mapRef)
         // remove base fields
         eventMap.keySet().removeAll(baseFields)
         // encode to JSON

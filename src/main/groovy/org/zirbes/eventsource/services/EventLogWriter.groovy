@@ -2,6 +2,7 @@ package org.zirbes.eventsource.services
 
 import com.datastax.driver.core.BoundStatement
 import com.datastax.driver.core.PreparedStatement
+import com.datastax.driver.core.ResultSetFuture
 import com.datastax.driver.core.Session
 import com.thirdchannel.eventsource.AbstractEvent
 
@@ -28,8 +29,7 @@ class EventLogWriter extends AbstractWriter {
                                                   user_id,
                                                   date_effective,
                                                   data
-                                              )
-                                              VALUES (?, ?, ?, ?, ?, ?, ?, ?);'''
+                                              ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)'''
 
     protected static final List<String> BASE_FIELDS = [
         'id',
@@ -53,33 +53,27 @@ class EventLogWriter extends AbstractWriter {
     EventLogWriter(AggregatePublisher publisher, Session session) {
         super(session)
         this.publisher = publisher
-    }
-
-    @Override
-    @PostConstruct
-    void setup() {
-        PreparedStatement ps = session.prepare(insertStatement)
-        this.insert = new BoundStatement(ps)
-    }
-
-    void writeEventAsync(AbstractEvent event) {
-        Promise.of{ writeEvent(event) }.then{}
+        this.insert = new BoundStatement(session.prepare(insertStatement))
     }
 
     protected void writeEvent(AbstractEvent event) {
+        byte[] data = dataFromAbstract(event)
+        UUID aggregateId = event.aggregateId
+        ByteBuffer byteBuffer = ByteBuffer.wrap(data)
+        assert insert != null
         BoundStatement bs = insert.bind(
             event.id,
             event.clazz,
             event.revision,
-            event.aggregateId,
+            aggregateId,
             event.date,
             event.userId,
             event.dateEffective,
-            ByteBuffer.wrap(dataFromAbstract(event))
+            byteBuffer
         )
-        session.execute(bs)
-        log.info 'Wrote key={} date={} event={}', event.id, event.date, event.data
-        publisher.publish(event.aggregateId)
+        session.executeAsync(bs)
+        log.info 'Wrote key={} date={} aggregateId={}', event.id, event.date, aggregateId
+        publisher.publish(aggregateId)
     }
 
 }
