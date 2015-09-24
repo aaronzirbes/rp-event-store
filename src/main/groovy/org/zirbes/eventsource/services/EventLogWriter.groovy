@@ -1,9 +1,11 @@
 package org.zirbes.eventsource.services
 
 import com.datastax.driver.core.BoundStatement
+import com.datastax.driver.core.PreparedStatement
 import com.datastax.driver.core.Session
 import com.thirdchannel.eventsource.AbstractEvent
 
+import groovy.transform.CompileStatic
 import groovy.util.logging.Slf4j
 
 import java.nio.ByteBuffer
@@ -13,6 +15,7 @@ import javax.inject.Inject
 
 import ratpack.exec.Promise
 
+@CompileStatic
 @Slf4j
 class EventLogWriter extends AbstractWriter {
 
@@ -38,6 +41,8 @@ class EventLogWriter extends AbstractWriter {
         'dateEffective'
     ].asImmutable()
 
+    protected final AggregatePublisher publisher
+
     @Override
     protected String getInsertStatement() { INSERT }
 
@@ -45,13 +50,16 @@ class EventLogWriter extends AbstractWriter {
     protected List<String> getBaseFields() { BASE_FIELDS }
 
     @Inject
-    EventLogWriter(Session session) {
+    EventLogWriter(AggregatePublisher publisher, Session session) {
         super(session)
+        this.publisher = publisher
     }
 
+    @Override
     @PostConstruct
     void setup() {
-        super.setup()
+        PreparedStatement ps = session.prepare(insertStatement)
+        this.insert = new BoundStatement(ps)
     }
 
     void writeEventAsync(AbstractEvent event) {
@@ -71,8 +79,7 @@ class EventLogWriter extends AbstractWriter {
         )
         session.execute(bs)
         log.info 'Wrote key={} date={} event={}', event.id, event.date, event.data
-
-        // TODO: Schedule Aggregate push to search
+        publisher.publish(event.aggregateId)
     }
 
 }

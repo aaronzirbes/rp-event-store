@@ -11,14 +11,16 @@ import spock.lang.Unroll
 
 class EventLogWriterSpec extends JsonSpecification {
 
+    AggregatePublisher publisher
     EventLogWriter writer
     Session session
     BoundStatement insert
 
     void setup() {
+        publisher = Mock()
         session = Mock()
         insert = Mock()
-        writer = new EventLogWriter(session)
+        writer = new EventLogWriter(publisher, session)
         writer.insert = insert
     }
 
@@ -42,6 +44,7 @@ class EventLogWriterSpec extends JsonSpecification {
         then:
         1 * insert.bind(_) >> insert
         1 * session.execute(insert)
+        1 * publisher.publish(_ as UUID)
         0 * _
 
         where:

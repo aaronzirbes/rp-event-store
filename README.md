@@ -50,7 +50,7 @@ Running Cassandra in a docker container
 Running Elasticsearch in a docker container
 
     docker pull elasticsearch:1.7
-    docker run --name evsrc-elasticsearch -p 9200:9200 -p 9300:9300 -d elasticsearch:1.7
+    docker run --name evsrc-elasticsearch -p 9200:9200 -p 9300:9300 -p 54328:54328 -d elasticsearch:1.7
 
 
 

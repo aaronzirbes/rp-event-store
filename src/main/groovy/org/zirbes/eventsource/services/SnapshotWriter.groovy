@@ -40,16 +40,18 @@ class SnapshotWriter extends AbstractWriter {
         super(session)
     }
 
-    @PostConstruct
-    void setup() {
-        super.setup()
-    }
-
     @Override
     protected String getInsertStatement() { INSERT }
 
     @Override
     protected List<String> getBaseFields() { BASE_FIELDS }
+
+    @Override
+    @PostConstruct
+    void setup() {
+        PreparedStatement ps = session.prepare(insertStatement)
+        this.insert = new BoundStatement(ps)
+    }
 
     void writeSnapshotAsync(Snapshot snapshot) {
         Promise.of{ writeSnapshot(snapshot) }.then{}

@@ -27,10 +27,7 @@ abstract class AbstractWriter {
         this.objectMapper = ObjectMapperBuilder.build()
     }
 
-    void setup() {
-        PreparedStatement ps = session.prepare(insertStatement)
-        this.insert = new BoundStatement(ps)
-    }
+    abstract void setup()
 
     /** Uses Jackson for now, it'd be faster to use apache Avro down the line */
     protected byte[] dataFromAbstract(Object event) {

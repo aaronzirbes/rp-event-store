@@ -1,17 +1,18 @@
 package org.zirbes.eventsource.handlers
 
 import com.google.inject.Inject
+import com.thirdchannel.eventsource.AbstractEvent
 
 import groovy.transform.CompileStatic
 import groovy.util.logging.Slf4j
 
 import org.joda.time.LocalDateTime
-import com.thirdchannel.eventsource.AbstractEvent
+import org.zirbes.eventsource.events.VehicleEvent
 import org.zirbes.eventsource.services.EventLogWriter
 
-import ratpack.jackson.JsonRender
 import ratpack.groovy.handling.GroovyContext
 import ratpack.groovy.handling.GroovyHandler
+import ratpack.jackson.JsonRender
 
 import static ratpack.jackson.Jackson.fromJson
 import static ratpack.jackson.Jackson.json
@@ -35,7 +36,7 @@ class EventWriterHandler extends GroovyHandler {
     @Override
     protected void handle(GroovyContext context) {
         context.render(
-            context.parse(fromJson(AbstractEvent)).map{ AbstractEvent event ->
+            context.parse(fromJson(VehicleEvent)).map{ AbstractEvent event ->
                 return handleEvent(event, context)
             }
         )
